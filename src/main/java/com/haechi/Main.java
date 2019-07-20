@@ -1,74 +1,12 @@
 package com.haechi;
 
 public class Main {
-    private static final int TOTAL_ROUND = 2;   // 자리를 바꾸는 총회수
-    private static final int TOTAL_STUDENTS = 10;
-
     public static void main(String[] args) {
-        test1();
+        //test1();
         //run();
     }
 
-    public static void test1() {
-        int round = 0;
-        Student[] students = new Student[TOTAL_STUDENTS];
-
-        for(int i = 0; i < TOTAL_STUDENTS; i++) {
-            students[i] = new Student();
-        }
-
-        students[0].setId(0);
-        students[1].setId(1);
-        students[2].setId(2);
-        students[3].setId(3);
-        students[4].setId(4);
-        students[5].setId(5);
-        students[6].setId(6);
-        students[7].setId(7);
-        students[8].setId(8);
-        students[9].setId(9);
-
-        students[0].setMale(false);
-        students[1].setMale(false);
-        students[2].setMale(false);
-        students[3].setMale(false);
-        students[4].setMale(false);
-        students[5].setMale(true);
-        students[6].setMale(false);
-        students[7].setMale(true);
-        students[8].setMale(false);
-        students[9].setMale(true);
-
-        run(round, students);
-        print(round, students);
-        if(students[0].getPartnerId(round) != 5) System.out.println("실패");
-        if(students[1].getPartnerId(round) != 7) System.out.println("실패");
-        if(students[2].getPartnerId(round) != 9) System.out.println("실패");
-        if(students[3].getPartnerId(round) != 4) System.out.println("실패");
-        if(students[4].getPartnerId(round) != 3) System.out.println("실패");
-        if(students[5].getPartnerId(round) != 0) System.out.println("실패");
-        if(students[6].getPartnerId(round) != 8) System.out.println("실패");
-        if(students[7].getPartnerId(round) != 1) System.out.println("실패");
-        if(students[8].getPartnerId(round) != 6) System.out.println("실패");
-        if(students[9].getPartnerId(round) != 2) System.out.println("실패");
-
-        run(++round, students);
-        print(round, students);
-        if(students[0].getPartnerId(round) != 7) System.out.println("실패");
-        if(students[1].getPartnerId(round) != 5) System.out.println("실패");
-        if(students[2].getPartnerId(round) != -1) System.out.println("실패");
-        if(students[3].getPartnerId(round) != 9) System.out.println("실패");
-        if(students[4].getPartnerId(round) != 6) System.out.println("실패");
-        if(students[5].getPartnerId(round) != 1) System.out.println("실패");
-        if(students[6].getPartnerId(round) != 4) System.out.println("실패");
-        if(students[7].getPartnerId(round) != 0) System.out.println("실패");
-        if(students[8].getPartnerId(round) != -1) System.out.println("실패");
-        if(students[9].getPartnerId(round) != 3) System.out.println("실패");
-
-        System.out.println("성공");
-    }
-
-    private static void run(int round, Student[] students) {
+    public static void run(int round, Student[] students) {
         boolean check = true;
         int maleCount = 0;
         int femaleCount = 0;
@@ -140,7 +78,7 @@ public class Main {
         return false;
     }
 
-    private static void print(int round, Student[] students) {
+    public static void print(int round, Student[] students) {
         for(int i = 0; i < students.length; i++) {
             System.out.println(students[i].getId() + "  " + students[i].getMale() + "  " + students[i].getPartnerId(round));
         }
