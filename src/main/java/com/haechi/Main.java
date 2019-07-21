@@ -7,7 +7,7 @@ public class Main {
     }
 
     public static void run(int round, Student[] students) {
-        boolean check = true;
+        boolean checkSex = true;
         int maleCount = 0;
         int femaleCount = 0;
 
@@ -18,37 +18,48 @@ public class Main {
             else femaleCount++;
         }
 
-        for (int i = 0; i < students.length; i++) {
-            Student student = students[i];
+        for(int j = 0; j < 2; j++) {
+            for (int i = 0; i < students.length; i++) {
+                Student student = students[i];
 
-            if(maleCount == 0 || femaleCount == 0) check = false;
+                if (maleCount == 0 || femaleCount == 0) checkSex = false;
 
-            if (student.hasPartner()) continue;   // 짝이 결정된 학생인지 확인
+                if (student.hasPartner()) continue;   // 짝이 결정된 학생인지 확인
 
-            for (int j = i + 1; j < students.length; j++) {
-                Student candidate = students[j];
+                Student candidate = findPartner(students, student, round, i + 1, checkSex);
+                //if(candidate == null) candidate = findPartner(students, student, round, i + 1, false);
+                if (candidate == null) continue;
 
-                if (candidate.hasPartner()) continue;  // 짝이 결정된 학생인지 확인
-                if (wasPartnerInThePast(student, candidate, round)) continue;   // 전에 짝이었는지 확인
-                if (student.getMale() == candidate.getMale() && check) continue;   // 동성인지 확인
+                makePartner(student, candidate, round);
 
-                student.setPartnerId(round, candidate.getId());
-                candidate.setPartnerId(round, student.getId());
-                student.setHasPartner(true);
-                candidate.setHasPartner(true);     // 두학생의 정보 갱신(짝이 됨)
+                if (student.getMale()) maleCount--;
+                else femaleCount--;
 
-                if(check) {
-                    maleCount--;
-                    femaleCount--;
-                }
-
-                /*System.out.println(maleCount);
-                System.out.println(femaleCount);
-                System.out.println();
-                System.out.println();*/
-                break;
+                if (candidate.getMale()) maleCount--;
+                else femaleCount--;
             }
         }
+    }
+
+    private static Student findPartner(Student[] students, Student student, int round, int beginIndex, boolean checkSex) {
+        for (int i = beginIndex; i < students.length; i++) {
+            Student candidate = students[i];
+
+            if (candidate.hasPartner()) continue;  // 이미 짝이 결정됐는지 확인
+            if (isExPartner(student, candidate, round)) continue;   // 전에 짝이었는지 확인
+            if (checkSex && student.getMale() == candidate.getMale()) continue;   // 동성인지 확인
+
+            return candidate;
+        }
+
+        return null;
+    }
+
+    private static void makePartner(Student student, Student candidate, int round) {
+        student.setPartnerId(round, candidate.getId());
+        candidate.setPartnerId(round, student.getId());
+        student.setHasPartner(true);
+        candidate.setHasPartner(true);     // 두학생의 정보 갱신(짝이 됨)
     }
 
     private static void init(Student[] students) {
@@ -57,7 +68,7 @@ public class Main {
         }
     }
 
-    private static void shuffle(Student[] students) {
+    public static void shuffle(Student[] students) {
         for(int i = 0; i < 100; i++) {
             Student temp;
             int index1 = (int) (Math.random() * students.length);
@@ -69,7 +80,7 @@ public class Main {
         }
     }
 
-    private static boolean wasPartnerInThePast(Student student, Student candidate, int round) {
+    private static boolean isExPartner(Student student, Student candidate, int round) {
         // 전에 짝이었는지 검사
         for (int i = 0; i < round; i++) {
             if (student.getPartnerId(i) == candidate.getId()) return true;

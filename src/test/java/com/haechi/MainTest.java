@@ -116,16 +116,16 @@ public class MainTest {
         students[8].setId(8);
         students[9].setId(9);
 
-        students[0].setMale(false);
-        students[1].setMale(false);
-        students[2].setMale(false);
-        students[3].setMale(false);
-        students[4].setMale(false);
-        students[5].setMale(true);
-        students[6].setMale(false);
-        students[7].setMale(true);
-        students[8].setMale(false);
-        students[9].setMale(true);
+        students[0].setMale(false); // 5, 7, 9, 4, 1
+        students[1].setMale(false); // 7, 5, 6, 9, 0
+        students[2].setMale(false); // 9, 8, 5, 7, 4
+        students[3].setMale(false); // 4, 9, 7, 5, 5
+        students[4].setMale(false); // 3, 6, 8, 0, 2
+        students[5].setMale(true);  // 0, 1, 2, 3, 3
+        students[6].setMale(false); // 8, 4, 1, ?, 9
+        students[7].setMale(true);  // 1, 0, 3, 2, 8
+        students[8].setMale(false); // 6, 2, 4, ?, 7
+        students[9].setMale(true);  // 2, 3, 0, 1, 6
 
         Main.run(round, students);
         //Main.print(round, students);
@@ -146,13 +146,45 @@ public class MainTest {
 
         assertThat(students[0].getPartnerId(round), is(7));
         assertThat(students[1].getPartnerId(round), is(5));
-        assertThat(students[2].getPartnerId(round), is(-1));
+        assertThat(students[2].getPartnerId(round), is(8));
         assertThat(students[3].getPartnerId(round), is(9));
         assertThat(students[4].getPartnerId(round), is(6));
         assertThat(students[5].getPartnerId(round), is(1));
         assertThat(students[6].getPartnerId(round), is(4));
         assertThat(students[7].getPartnerId(round), is(0));
-        assertThat(students[8].getPartnerId(round), is(-1));
+        assertThat(students[8].getPartnerId(round), is(2));
         assertThat(students[9].getPartnerId(round), is(3));
+
+        Main.run(++round, students);
+        //Main.print(round, students);
+
+        assertThat(students[0].getPartnerId(round), is(9));
+        assertThat(students[1].getPartnerId(round), is(6));
+        assertThat(students[2].getPartnerId(round), is(5));
+        assertThat(students[3].getPartnerId(round), is(7));
+        assertThat(students[4].getPartnerId(round), is(8));
+        assertThat(students[5].getPartnerId(round), is(2));
+        assertThat(students[6].getPartnerId(round), is(1));
+        assertThat(students[7].getPartnerId(round), is(3));
+        assertThat(students[8].getPartnerId(round), is(4));
+        assertThat(students[9].getPartnerId(round), is(0));
+
+        Main.run(++round, students);
+        //Main.print(round, students);
+
+        assertThat(students[0].getPartnerId(round), is(4));
+        assertThat(students[1].getPartnerId(round), is(9));
+        assertThat(students[2].getPartnerId(round), is(7));
+        assertThat(students[3].getPartnerId(round), is(5));
+        assertThat(students[4].getPartnerId(round), is(0));
+        assertThat(students[5].getPartnerId(round), is(3));
+        assertThat(students[6].getPartnerId(round), is(-1));
+        assertThat(students[7].getPartnerId(round), is(2));
+        assertThat(students[8].getPartnerId(round), is(-1));
+        assertThat(students[9].getPartnerId(round), is(1));
+
+        Main.shuffle(students);
+        Main.run(round, students);
+        Main.print(round, students);
     }
 }
