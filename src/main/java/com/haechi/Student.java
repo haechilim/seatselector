@@ -7,10 +7,17 @@ public class Student {
     private boolean male;
     private int[] partners = new int[10];
 
-    Student() {
+    public Student() {
         for(int i = 0; i < partners.length; i++) {
             partners[i] = -1;
         }
+    }
+
+    public Student(int id, boolean male) {
+        this();
+
+        this.id = id;
+        this.male = male;
     }
 
     public void setId(int id) {
