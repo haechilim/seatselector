@@ -6,6 +6,7 @@ public class Student {
     private String name;
     private boolean male;
     private int[] partners = new int[10];
+    private int score = 0;
 
     public Student() {
         for(int i = 0; i < partners.length; i++) {
@@ -58,5 +59,17 @@ public class Student {
 
     public int getPartnerId(int index) {
         return (index >= 0 && index < partners.length) ? partners[index] : -1;
+    }
+
+    public void increaseScore() {
+        score++;
+    }
+
+    public void decreaseScore() {
+        score--;
+    }
+
+    public int getScore() {
+        return score;
     }
 }

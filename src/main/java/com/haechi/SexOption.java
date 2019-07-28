@@ -1,7 +1,7 @@
 package com.haechi;
 
 public enum SexOption {
-    SAME,
-    DIFFERENT,
-    OFF
+    SAME,   // 동성우선
+    DIFFERENT,  // 이성우선
+    OFF // 성별무관
 }
