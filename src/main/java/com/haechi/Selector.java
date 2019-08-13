@@ -60,8 +60,8 @@ public class Selector {
     }
 
     private void makePartner(Student student, Student partner) {
-        student.setPartnerId(round, partner.getId());
-        partner.setPartnerId(round, student.getId());
+        student.addPartner(partner.getId());
+        partner.addPartner(student.getId());
         student.setHasPartner(true);
         partner.setHasPartner(true);     // 두학생의 정보 갱신(짝이 됨)
     }
@@ -116,6 +116,20 @@ public class Selector {
             temp = students[index1];
             students[index1] = students[index2];
             students[index2] = temp;
+        }
+    }
+
+    public void sort(Student[] students) {
+        Student temp;
+
+        for (int j = 0; j < (students.length - 1); j++) {
+            for (int i = (j + 1); i < students.length; i++) {
+                if (students[j].getScore() > students[i].getScore()) {
+                    temp = students[j];
+                    students[j] = students[i];
+                    students[i] = temp;
+                }
+            }
         }
     }
 

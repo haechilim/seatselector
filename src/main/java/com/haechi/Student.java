@@ -5,12 +5,12 @@ public class Student {
     private boolean hasPartner;
     private String name;
     private boolean male;
-    private int[] partners = new int[10];
+    private MyArray partners = new MyArray();
     private int score = 0;
 
     public Student() {
-        for(int i = 0; i < partners.length; i++) {
-            partners[i] = -1;
+        for(int i = 0; i < partners.getLength(); i++) {
+            partners.set(i, -1);
         }
     }
 
@@ -19,6 +19,14 @@ public class Student {
 
         this.id = id;
         this.male = male;
+    }
+
+    public Student(int id, boolean male, String name) {
+        this();
+
+        this.id = id;
+        this.male = male;
+        this.name = name;
     }
 
     public void setId(int id) {
@@ -53,12 +61,12 @@ public class Student {
         return male;
     }
 
-    public void setPartnerId(int index, int partnerId) {
-        if(index >= 0 && index < partners.length) partners[index] = partnerId;
+    public void addPartner(int partnerId) {
+        partners.add(partnerId);
     }
 
     public int getPartnerId(int index) {
-        return (index >= 0 && index < partners.length) ? partners[index] : -1;
+        return (index >= 0 && index < partners.getLength()) ? partners.get(index) : -1;
     }
 
     public void increaseScore() {
@@ -67,6 +75,10 @@ public class Student {
 
     public void decreaseScore() {
         score--;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     public int getScore() {
