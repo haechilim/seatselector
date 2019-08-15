@@ -187,6 +187,8 @@ public class SelectorTest {
         students[2] = new Student(2, false, "말똥이");
         students[3] = new Student(3, true, "듣보잡");
 
+        // TODO (5) assertThat(students.getCurrentPartner("개똥이").getName(), is("소똥이"));
+
         {   //  1라운드
             round = selector.getRound();
             selector.run(students, SexOption.DIFFERENT);

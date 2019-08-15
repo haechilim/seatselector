@@ -1,10 +1,17 @@
 package com.haechi;
 
+/* TODO (2) 다음 함수 만들기
+ *
+ * int getCurrentPartnerId()  //  현재 파트너의 ID를 리턴하는 함수
+ *
+ */
+
 public class Student {
     private int id;
     private boolean hasPartner;
     private String name;
     private boolean male;
+    //  TODO (1) ArrayList로 변경
     private MyArray partners = new MyArray();
     private int score = 0;
 

@@ -1,5 +1,21 @@
 package com.haechi;
 
+/* TODO (4) Students 클래스 새로 만들기
+ *
+ * 아래 표시해둔 함수들을 이 클래스로 이동
+ *
+ * init(), shuffule, sort(), print()
+ *
+ *
+ * 그리고 다음 함수들 생성
+ *
+ * Student getStudent(int id);
+ * Student getStudent(String name);
+ * Student getCurrentPartner(int id);
+ * Student getCurrentPartner(String name);
+ *
+ */
+
 public class Selector {
     private int round = 0;
 
@@ -85,12 +101,14 @@ public class Selector {
         }
     }
 
+    //  TODO Students 클래스로 이동
     private void init(Student[] students) {
         for(int i = 0; i < students.length; i++) {
             students[i].setHasPartner(false);
         }
     }
 
+    //  TODO Students 클래스로 이동
     public void shuffle(Student[] students, Student loss) {
         students[0] = loss;
 
@@ -107,6 +125,7 @@ public class Selector {
         }
     }
 
+    //  TODO Students 클래스로 이동
     public void shuffle(Student[] students) {
         for(int i = 0; i < 100; i++) {
             Student temp;
@@ -119,6 +138,7 @@ public class Selector {
         }
     }
 
+    //  TODO Students 클래스로 이동
     public void sort(Student[] students) {
         Student temp;
 
@@ -133,6 +153,7 @@ public class Selector {
         }
     }
 
+    //  TODO (3) Student 클래스로 이동
     private boolean isExPartner(Student student, Student candidate) {
         // 전에 짝이었는지 검사
         for (int i = 0; i < round; i++) {
@@ -142,6 +163,7 @@ public class Selector {
         return false;
     }
 
+    //  TODO Students 클래스로 이동
     public void print(Student[] students) {
         for(int i = 0; i < students.length; i++) {
             System.out.println(students[i].getId() + "  " + students[i].getMale() + "  " + students[i].getPartnerId(round));
