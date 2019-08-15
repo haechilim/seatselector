@@ -5,24 +5,27 @@ public class MyArray {
     private int[] numbers = new int[10];
 
     public void add(int number) {
-        if(count < numbers.length) {
-            numbers[count] = number;
-            count++;
-            return;
+        if(count == numbers.length) resize();
+
+        numbers[count++] = number;
+    }
+
+    public void insert(int index, int number) {
+        if(!validIndex(index)) return;
+
+        if(count == numbers.length) resize();
+
+        for(int  i = count; i >= index; i--) {
+            numbers[i + 1] = numbers[i];
         }
 
-        resize();
+        numbers[index] = number;
 
-        if(validIndex(count)) numbers[count] = number;
         count++;
     }
 
     private void resize() {
-        int[] temp = new int[numbers.length];
-
-        for(int i = 0; i < temp.length; i++) {
-            temp[i] = numbers[i];
-        }
+        int[] temp = numbers;
 
         numbers = new int[temp.length * 2];
 
@@ -31,32 +34,16 @@ public class MyArray {
         }
     }
 
-    public void insert(int index, int number) {
-        count++;
-
-        if(validIndex(index)) {
-            for(int i = index; i < numbers.length; i++) {
-                if(validIndex(i + 1)) {
-                    numbers[i] = numbers[i + 1];
-                }
-
-                resize();
-
-                if(validIndex(count)) numbers[count] = numbers[i];
-            }
-        }
-
-        numbers[index] = number;
-    }
-
     public void remove(int index) {
-        count--;
+        if(!validIndex(index)) return;
 
-        if(validIndex(index) && validIndex(index + 1)) {
-            for(int i = (index + 1); i < numbers.length; i++) {
+        if (index < count - 1) {
+            for (int i = (index + 1); i < numbers.length; i++) {
                 numbers[i - 1] = numbers[i];
             }
         }
+
+        count--;
     }
 
     public int get(int index) {
@@ -67,17 +54,7 @@ public class MyArray {
         if(validIndex(index)) numbers[index] = number;
     }
 
-    public int getLength() {
-        return numbers.length;
-    }
-
-    public int count() {
-        int count = 0;
-
-        for(int i = 0; i < numbers.length; i++) {
-            if(numbers[i] != 0) count++;
-        }
-
+    public int getCount() {
         return count;
     }
 

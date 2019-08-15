@@ -9,7 +9,7 @@ public class Student {
     private int score = 0;
 
     public Student() {
-        for(int i = 0; i < partners.getLength(); i++) {
+        for(int i = 0; i < partners.getCount(); i++) {
             partners.set(i, -1);
         }
     }
@@ -66,7 +66,7 @@ public class Student {
     }
 
     public int getPartnerId(int index) {
-        return (index >= 0 && index < partners.getLength()) ? partners.get(index) : -1;
+        return (index >= 0 && index < partners.getCount()) ? partners.get(index) : -1;
     }
 
     public void increaseScore() {
