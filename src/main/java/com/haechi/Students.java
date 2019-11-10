@@ -6,6 +6,20 @@ import java.util.List;
 public class Students {
     private List<Student> students = new ArrayList<>();
 
+    public void init() {
+        for(int i = 0; i < students.size(); i++) {
+            students.get(i).setHasPartner(false);
+        }
+    }
+
+    public boolean everyStudentsHasPartner() {
+        for(int i = 0; i < students.size(); i++) {
+            if(!students.get(i).hasPartner()) return false;
+        }
+
+        return true;
+    }
+
     public Student get(int index) {
         return validIndex(index) ? students.get(index) : null;
     }

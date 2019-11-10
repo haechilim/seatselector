@@ -1,10 +1,8 @@
 package com.haechi;
 
 import org.junit.Test;
-import org.junit.Ignore;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class SelectorTest {
@@ -20,28 +18,47 @@ public class SelectorTest {
         students.add(new Student(2, false, "장진원"));
         students.add(new Student(3, true, "이기택"));
 
-        students.get("임준형").addFavoritePartner(students.getId("장진원"));
-        students.get("임준형").addFavoritePartner(students.getId("이기택"));
-        students.get("임준형").addFavoritePartner(students.getId("유현서"));
+        students.get("임준형").addFavoritePartner(students.get("장진원"));
+        students.get("임준형").addFavoritePartner(students.get("이기택"));
+        students.get("임준형").addFavoritePartner(students.get("유현서"));
 
-        students.get("유현서").addFavoritePartner(students.getId("장진원"));
-        students.get("유현서").addFavoritePartner(students.getId("임준형"));
-        students.get("유현서").addFavoritePartner(students.getId("이기택"));
+        students.get("유현서").addFavoritePartner(students.get("장진원"));
+        students.get("유현서").addFavoritePartner(students.get("임준형"));
+        students.get("유현서").addFavoritePartner(students.get("이기택"));
 
-        students.get("장진원").addFavoritePartner(students.getId("임준형"));
-        students.get("장진원").addFavoritePartner(students.getId("유현서"));
-        students.get("장진원").addFavoritePartner(students.getId("이기택"));
+        students.get("장진원").addFavoritePartner(students.get("임준형"));
+        students.get("장진원").addFavoritePartner(students.get("유현서"));
+        students.get("장진원").addFavoritePartner(students.get("이기택"));
 
-        students.get("이기택").addFavoritePartner(students.getId("유현서"));
-        students.get("이기택").addFavoritePartner(students.getId("임준형"));
-        students.get("이기택").addFavoritePartner(students.getId("장진원"));
+        students.get("이기택").addFavoritePartner(students.get("유현서"));
+        students.get("이기택").addFavoritePartner(students.get("임준형"));
+        students.get("이기택").addFavoritePartner(students.get("장진원"));
 
-        selector.run(students);
-        assertThat(students.get("임준형").getParteners(students, round), is("장진원"));
-        assertThat(students.get("유현서").getParteners(students, round), is("이기택"));
-        assertThat(students.get("장진원").getParteners(students, round), is("임준형"));
-        assertThat(students.get("이기택").getParteners(students, round), is("유현서"));
-        round++;
+        if(selector.run(students)) {
+            assertThat(students.get("임준형").getPartnerName(round), is("장진원"));
+            assertThat(students.get("유현서").getPartnerName(round), is("이기택"));
+            assertThat(students.get("장진원").getPartnerName(round), is("임준형"));
+            assertThat(students.get("이기택").getPartnerName(round), is("유현서"));
+            round++;
+        }
+
+        if(selector.run(students)) {
+            assertThat(students.get("임준형").getPartnerName(round), is("이기택"));
+            assertThat(students.get("유현서").getPartnerName(round), is("장진원"));
+            assertThat(students.get("장진원").getPartnerName(round), is("유현서"));
+            assertThat(students.get("이기택").getPartnerName(round), is("임준형"));
+            round++;
+        }
+
+        if(selector.run(students)) {
+            assertThat(students.get("임준형").getPartnerName(round), is("유현서"));
+            assertThat(students.get("유현서").getPartnerName(round), is("임준형"));
+            assertThat(students.get("장진원").getPartnerName(round), is("이기택"));
+            assertThat(students.get("이기택").getPartnerName(round), is("장진원"));
+            round++;
+        }
+
+        assertThat(selector.run(students), is(false));
     }
 
     /*@Test

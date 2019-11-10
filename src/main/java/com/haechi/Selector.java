@@ -1,8 +1,58 @@
 package com.haechi;
 
 public class Selector {
-    public void run(Students students) {
-        for(int j = 0; j < students.size(); j++) {
+    public boolean run(Students students) {
+        students.init();
+
+        for (int choice = 0; choice < students.size() - 1; choice++) {
+            for (int i = 0; i < students.size(); i++) {
+                Student student = students.get(i);
+                Student partner = student.getFavoritePartner(choice);
+
+                if (student.hasPartner() || partner.hasPartner()) continue;
+                if (student.isExpartner(partner)) continue;
+                if (partner.getFavoritePartner(0).getId() == student.getId()) makePartner(student, partner);
+            }
+        }
+
+        for (int i = 0; i < students.size(); i++) {
+            Student student = students.get(i);
+
+            if(student.hasPartner()) continue;
+
+            for (int choice = 0; choice < students.size() - 1; choice++) {
+                Student partner = student.getFavoritePartner(choice);
+
+                if(student.isExpartner(partner)) continue;
+                if(!partner.hasPartner()) {
+                    makePartner(student, partner);
+                    break;
+                }
+            }
+        }
+
+        return students.everyStudentsHasPartner();
+    }
+
+    private void makePartner(Student student, Student partner) {
+        student.addPartner(partner);
+        partner.addPartner(student);
+
+        student.setHasPartner(true);
+        partner.setHasPartner(true);
+    }
+
+
+
+
+
+
+
+
+
+
+
+        /*for(int j = 0; j < students.size(); j++) {
             for (int i = 0; i < students.size(); i++) {
                 Student student = students.get(i);
                 Student partner = student.getPreferPartners(students, j);
@@ -20,14 +70,6 @@ public class Selector {
                 }
             }
         }
-    }
-
-    private void makePartner(Student student, Student partner) {
-            student.setParteners(partner);
-            partner.setParteners(student);
-
-            student.setHasPartner(true);
-            partner.setHasPartner(true);
     }
 
 

@@ -6,8 +6,6 @@ package com.haechi;
  *
  */
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +14,8 @@ public class Student {
     private boolean hasPartner;
     private String name;
     private boolean male;
-    private List<Integer> favoritePartners = new ArrayList<>();
-    private List<Integer> partners = new ArrayList<>();
+    private List<Student> favoritePartners = new ArrayList<>();
+    private List<Student> partners = new ArrayList<>();
     private int score = 0;
 
     public Student() {
@@ -73,29 +71,28 @@ public class Student {
         return male;
     }
 
-    /*
-        TODO 다음과 같이 수정해보세요
-
-        public void addFavoritePartner(int partnerId)
-     */
-    public void addFavoritePartner(int partnerId) {
-        favoritePartners.add(partnerId);
+    public void addFavoritePartner(Student partner) {
+        favoritePartners.add(partner);
     }
 
-    public String getParteners(Students students, int round) {
-        return students.get(partners.get(round)).getName();
+    public Student getFavoritePartner(int choice) {
+        return choice >= 0 && choice < favoritePartners.size() ? favoritePartners.get(choice) : null;
     }
 
-    public Student getPreferPartners(Students students, int round) {
-        return students.get(favoritePartners.get(favoritePartners.size() - 1));
+    public String getPartnerName(int round) {
+        return partners.get(round).getName();
     }
 
-    public Student getFirstPreferPartners(Students students) {
-        return students.get(favoritePartners.get(0));
+    public void addPartner(Student student) {
+        partners.add(student);
     }
 
-    public void setParteners(Student student) {
-        partners.add(student.getId());
+    public boolean isExpartner(Student partner) {
+        for(int i = 0; i < partners.size(); i++) {
+            if(partners.get(i).getId() == partner.getId()) return true;
+        }
+
+        return false;
     }
 
     /*private int getStudentId() {
