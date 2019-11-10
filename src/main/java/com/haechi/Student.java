@@ -6,18 +6,23 @@ package com.haechi;
  *
  */
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Student {
     private int id;
     private boolean hasPartner;
     private String name;
     private boolean male;
-    //  TODO (1) ArrayList로 변경
-    private MyArray partners = new MyArray();
+    private List<Integer> favoritePartners = new ArrayList<>();
+    private List<Integer> partners = new ArrayList<>();
     private int score = 0;
 
     public Student() {
-        for(int i = 0; i < partners.getCount(); i++) {
-            partners.set(i, -1);
+        for(int i = 0; i < favoritePartners.size(); i++) {
+            favoritePartners.set(i, null);
         }
     }
 
@@ -68,12 +73,136 @@ public class Student {
         return male;
     }
 
-    public void addPartner(int partnerId) {
-        partners.add(partnerId);
+    /*
+        TODO 다음과 같이 수정해보세요
+
+        public void addFavoritePartner(int partnerId)
+     */
+    public void addFavoritePartner(int partnerId) {
+        favoritePartners.add(partnerId);
     }
 
-    public int getPartnerId(int index) {
-        return (index >= 0 && index < partners.getCount()) ? partners.get(index) : -1;
+    public String getParteners(Students students, int round) {
+        return students.get(partners.get(round)).getName();
+    }
+
+    public Student getPreferPartners(Students students, int round) {
+        return students.get(favoritePartners.get(favoritePartners.size() - 1));
+    }
+
+    public Student getFirstPreferPartners(Students students) {
+        return students.get(favoritePartners.get(0));
+    }
+
+    public void setParteners(Student student) {
+        partners.add(student.getId());
+    }
+
+    /*private int getStudentId() {
+        for(int i = 0; i < favoritePartners.size(); i++) {
+            favoritePartners.get(i).getName
+        }
+    }*/
+
+    /*public Student getParteners() {
+        return partners.get(partners.size() - 1);
+    }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*public Student() {
+        for(int i = 0; i < preferPartners.size(); i++) {
+            preferPartners.set(i, -1);
+        }
+    }
+
+    public Student(int id, boolean male) {
+        this();
+
+        this.id = id;
+        this.male = male;
+    }
+
+    public Student(int id, boolean male, String name) {
+        this();
+
+        this.id = id;
+        this.male = male;
+        this.name = name;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setHasPartner(boolean hasPartner) {
+        this.hasPartner = hasPartner;
+    }
+
+    public boolean hasPartner() {
+        return hasPartner;
+    }
+
+    public void setName(String  name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setMale(boolean male) {
+        this.male = male;
+    }
+
+    public boolean getMale() {
+        return male;
+    }
+
+    public void addPreferPartners(String name) {
+        preferPartners.add(name);
+    }
+
+    public int getpreferPartnersId(int index) {
+        return (index >= 0 && index < preferPartners.size()) ? preferPartners.get(index) : -1;
+    }
+
+    private int searchPreferPartnerId(String name) {
+        for(int i = 0; i < preferPartners.size(); i++) {
+            preferPartners.get(i)
+        }
+    }
+
+    public int getCurrentPartnerId() {
+        return preferPartners.get(preferPartners.size() - 1);
     }
 
     public void increaseScore() {
@@ -90,5 +219,5 @@ public class Student {
 
     public int getScore() {
         return score;
-    }
+    }*/
 }

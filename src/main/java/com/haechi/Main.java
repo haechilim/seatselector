@@ -9,7 +9,6 @@ public class Main {
         array[0] = new Student();
         array[1] = new Student();
 
-
         List<Student> students = new ArrayList<>();
         students.add(new Student());
         students.add(new Student());

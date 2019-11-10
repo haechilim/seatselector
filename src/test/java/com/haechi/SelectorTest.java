@@ -1,431 +1,354 @@
 package com.haechi;
 
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class SelectorTest {
     @Test
-    public void 이성우선_검증() {
-        int round;
+    public void 기본_로직_검증() {
         Selector selector = new Selector();
-        Student[] students = new Student[4];
+        Students students = new Students();
 
-        students[0] = new Student(0, false);
-        students[1] = new Student(1, true);
-        students[2] = new Student(2, false);
-        students[3] = new Student(3, true);
+        int round = 0;
 
-        round = selector.getRound();
+        students.add(new Student(0, false, "임준형"));
+        students.add(new Student(1, true, "유현서"));
+        students.add(new Student(2, false, "장진원"));
+        students.add(new Student(3, true, "이기택"));
+
+        students.get("임준형").addFavoritePartner(students.getId("장진원"));
+        students.get("임준형").addFavoritePartner(students.getId("이기택"));
+        students.get("임준형").addFavoritePartner(students.getId("유현서"));
+
+        students.get("유현서").addFavoritePartner(students.getId("장진원"));
+        students.get("유현서").addFavoritePartner(students.getId("임준형"));
+        students.get("유현서").addFavoritePartner(students.getId("이기택"));
+
+        students.get("장진원").addFavoritePartner(students.getId("임준형"));
+        students.get("장진원").addFavoritePartner(students.getId("유현서"));
+        students.get("장진원").addFavoritePartner(students.getId("이기택"));
+
+        students.get("이기택").addFavoritePartner(students.getId("유현서"));
+        students.get("이기택").addFavoritePartner(students.getId("임준형"));
+        students.get("이기택").addFavoritePartner(students.getId("장진원"));
+
+        selector.run(students);
+        assertThat(students.get("임준형").getParteners(students, round), is("장진원"));
+        assertThat(students.get("유현서").getParteners(students, round), is("이기택"));
+        assertThat(students.get("장진원").getParteners(students, round), is("임준형"));
+        assertThat(students.get("이기택").getParteners(students, round), is("유현서"));
+        round++;
+    }
+
+    /*@Test
+    public void 이성우선_검증() {
+        Selector selector = new Selector();
+        Students students = new Students();
+
+        students.add(new Student(0, false, "임준형"));
+        students.add(new Student(1, true, "유현서"));
+        students.add(new Student(2, false, "장진원"));
+        students.add(new Student(3, true, "이기택"));
+
         selector.run(students, SexOption.DIFFERENT);
-        assertThat(students[0].getPartnerId(round), is(1));
-        assertThat(students[1].getPartnerId(round), is(0));
-        assertThat(students[2].getPartnerId(round), is(3));
-        assertThat(students[3].getPartnerId(round), is(2));
+        assertThat(students.getCurrentPartner("임준형").getName(), is("유현서"));
+        assertThat(students.getCurrentPartner("유현서").getName(), is("임준형"));
+        assertThat(students.getCurrentPartner("장진원").getName(), is("이기택"));
+        assertThat(students.getCurrentPartner("이기택").getName(), is("장진원"));
     }
 
     @Test
     public void 동성우선_검증() {
-        int round;
         Selector selector = new Selector();
-        Student[] students = new Student[4];
+        Students students = new Students();
 
-        students[0] = new Student(0, false);
-        students[1] = new Student(1, true);
-        students[2] = new Student(2, false);
-        students[3] = new Student(3, true);
+        students.add(new Student(0, false, "임준형"));
+        students.add(new Student(1, true, "유현서"));
+        students.add(new Student(2, false, "장진원"));
+        students.add(new Student(3, true, "이기택"));
 
-        round = selector.getRound();
         selector.run(students, SexOption.SAME);
-        assertThat(students[0].getPartnerId(round), is(2));
-        assertThat(students[1].getPartnerId(round), is(3));
-        assertThat(students[2].getPartnerId(round), is(0));
-        assertThat(students[3].getPartnerId(round), is(1));
+        assertThat(students.getCurrentPartner("임준형").getName(), is("장진원"));
+        assertThat(students.getCurrentPartner("유현서").getName(), is("이기택"));
+        assertThat(students.getCurrentPartner("장진원").getName(), is("임준형"));
+        assertThat(students.getCurrentPartner("이기택").getName(), is("유현서"));
     }
 
     @Test
     public void 성별무관_검증() {
-        int round;
         Selector selector = new Selector();
-        Student[] students = new Student[6];
+        Students students = new Students();
 
-        students[0] = new Student(0, false);
-        students[1] = new Student(1, false);
-        students[2] = new Student(2, true);
-        students[3] = new Student(3, false);
-        students[4] = new Student(4, true);
-        students[5] = new Student(5, true);
+        students.add(new Student(0, false, "임준형"));
+        students.add(new Student(1, false, "유현서"));
+        students.add(new Student(2, true, "장진원"));
+        students.add(new Student(3, false, "이기택"));
+        students.add(new Student(4, true, "유다용"));
+        students.add(new Student(5, true, "김준식"));
 
-        round = selector.getRound();
         selector.run(students, SexOption.OFF);
-        assertThat(students[0].getPartnerId(round), is(1));
-        assertThat(students[1].getPartnerId(round), is(0));
-        assertThat(students[2].getPartnerId(round), is(3));
-        assertThat(students[3].getPartnerId(round), is(2));
-        assertThat(students[4].getPartnerId(round), is(5));
-        assertThat(students[5].getPartnerId(round), is(4));
+        assertThat(students.getCurrentPartner("임준형").getName(), is("유현서"));
+        assertThat(students.getCurrentPartner("유현서").getName(), is("임준형"));
+        assertThat(students.getCurrentPartner("장진원").getName(), is("이기택"));
+        assertThat(students.getCurrentPartner("이기택").getName(), is("장진원"));
+        assertThat(students.getCurrentPartner("유다용").getName(), is("김준식"));
+        assertThat(students.getCurrentPartner("김준식").getName(), is("유다용"));
     }
 
     @Test
     public void 이성우선_가중치_검증() {
-        int round;
         Selector selector = new Selector();
-        Student[] students = new Student[5];
+        Students students = new Students();
 
-        students[0] = new Student(0, false);
-        students[1] = new Student(1, true);
-        students[2] = new Student(2, false);
-        students[3] = new Student(3, false);
-        students[4] = new Student(4, false);
+        students.add(new Student(0, false, "임준형"));
+        students.add(new Student(1, true, "유현서"));
+        students.add(new Student(2, false, "장진원"));
+        students.add(new Student(3, false, "이기택"));
+        students.add(new Student(4, false, "유다용"));
 
-        round = selector.getRound();
         selector.run(students, SexOption.DIFFERENT);
-        assertThat(students[0].getPartnerId(round), is(1));
-        assertThat(students[1].getPartnerId(round), is(0));
-        assertThat(students[2].getPartnerId(round), is(3));
-        assertThat(students[3].getPartnerId(round), is(2));
-        assertThat(students[4].getPartnerId(round), is(-1));
+        assertThat(students.getCurrentPartner("임준형").getName(), is("유현서"));
+        assertThat(students.getCurrentPartner("유현서").getName(), is("임준형"));
+        assertThat(students.getCurrentPartner("장진원").getName(), is("이기택"));
+        assertThat(students.getCurrentPartner("이기택").getName(), is("장진원"));
+        assertThat(students.getCurrentPartner("유다용"), is(nullValue()));
 
-        assertThat(students[0].getScore(), is(1));
-        assertThat(students[1].getScore(), is(1));
-        assertThat(students[2].getScore(), is(0));
-        assertThat(students[3].getScore(), is(0));
-        assertThat(students[4].getScore(), is(0));
+        assertThat(students.getCurrentPartner("임준형").getScore(), is(1));
+        assertThat(students.getCurrentPartner("유현서").getScore(), is(1));
+        assertThat(students.getCurrentPartner("장진원").getScore(), is(0));
+        assertThat(students.getCurrentPartner("이기택").getScore(), is(0));
     }
 
     @Test
     public void 동성우선_가중치_검증() {
-        int round;
         Selector selector = new Selector();
-        Student[] students = new Student[5];
+        Students students = new Students();
 
-        students[0] = new Student(0, true);
-        students[1] = new Student(1, true);
-        students[2] = new Student(2, false);
-        students[3] = new Student(3, false);
-        students[4] = new Student(4, false);
+        students.add(new Student(0, true,"임준형"));
+        students.add(new Student(1, true,"유현서"));
+        students.add(new Student(2, false,"장진원"));
+        students.add(new Student(3, false,"이기택"));
+        students.add(new Student(4, false,"유다용"));
 
-        round = selector.getRound();
         selector.run(students, SexOption.SAME);
-        assertThat(students[0].getPartnerId(round), is(1));
-        assertThat(students[1].getPartnerId(round), is(0));
-        assertThat(students[2].getPartnerId(round), is(3));
-        assertThat(students[3].getPartnerId(round), is(2));
-        assertThat(students[4].getPartnerId(round), is(-1));
+        assertThat(students.getCurrentPartner("임준형").getName(), is("유현서"));
+        assertThat(students.getCurrentPartner("유현서").getName(), is("임준형"));
+        assertThat(students.getCurrentPartner("장진원").getName(), is("이기택"));
+        assertThat(students.getCurrentPartner("이기택").getName(), is("장진원"));
+        assertThat(students.getCurrentPartner("유다용"), is(nullValue()));
 
-        assertThat(students[0].getScore(), is(1));
-        assertThat(students[1].getScore(), is(1));
-        assertThat(students[2].getScore(), is(1));
-        assertThat(students[3].getScore(), is(1));
-        assertThat(students[4].getScore(), is(0));
+        assertThat(students.getCurrentPartner("임준형").getScore(), is(1));
+        assertThat(students.getCurrentPartner("유현서").getScore(), is(1));
+        assertThat(students.getCurrentPartner("장진원").getScore(), is(1));
+        assertThat(students.getCurrentPartner("이기택").getScore(), is(1));
     }
 
     @Test
     public void 성별무관_가중치_검증() {
-        int round;
         Selector selector = new Selector();
-        Student[] students = new Student[5];
+        Students students = new Students();
 
-        students[0] = new Student(0, true);
-        students[1] = new Student(1, false);
-        students[2] = new Student(2, false);
-        students[3] = new Student(3, false);
-        students[4] = new Student(4, true);
+        students.add(new Student(0, true, "임준형"));
+        students.add(new Student(1, false, "유현서"));
+        students.add(new Student(2, false, "장진원"));
+        students.add(new Student(3, false, "이기택"));
+        students.add(new Student(4, true, "유다용"));
 
-        round = selector.getRound();
         selector.run(students, SexOption.OFF);
-        assertThat(students[0].getPartnerId(round), is(1));
-        assertThat(students[1].getPartnerId(round), is(0));
-        assertThat(students[2].getPartnerId(round), is(3));
-        assertThat(students[3].getPartnerId(round), is(2));
-        assertThat(students[4].getPartnerId(round), is(-1));
+        assertThat(students.getCurrentPartner("임준형").getName(), is("유현서"));
+        assertThat(students.getCurrentPartner("유현서").getName(), is("임준형"));
+        assertThat(students.getCurrentPartner("장진원").getName(), is("이기택"));
+        assertThat(students.getCurrentPartner("이기택").getName(), is("장진원"));
+        assertThat(students.getCurrentPartner("유다용"), is(nullValue()));
 
-        assertThat(students[0].getScore(), is(1));
-        assertThat(students[1].getScore(), is(1));
-        assertThat(students[2].getScore(), is(1));
-        assertThat(students[3].getScore(), is(1));
-        assertThat(students[4].getScore(), is(0));
+        assertThat(students.getCurrentPartner("임준형").getScore(), is(1));
+        assertThat(students.getCurrentPartner("유현서").getScore(), is(1));
+        assertThat(students.getCurrentPartner("장진원").getScore(), is(1));
+        assertThat(students.getCurrentPartner("이기택").getScore(), is(1));
     }
 
     @Test
     public void 과거의_짝_피하기_검증() {
-        int round;
         Selector selector = new Selector();
-        Student[] students = new Student[4];
+        Students students = new Students();
 
-        students[0] = new Student(0, false);
-        students[1] = new Student(1, true);
-        students[2] = new Student(2, false);
-        students[3] = new Student(3, true);
+        students.add(new Student(0, false, "임준형"));
+        students.add(new Student(1, true, "유현서"));
+        students.add(new Student(2, false, "장진원"));
+        students.add(new Student(3, true, "이기택"));
 
-        round = selector.getRound();
         selector.run(students, SexOption.DIFFERENT);
-        assertThat(students[0].getPartnerId(round), is(1));
-        assertThat(students[1].getPartnerId(round), is(0));
-        assertThat(students[2].getPartnerId(round), is(3));
-        assertThat(students[3].getPartnerId(round), is(2));
+        assertThat(students.getCurrentPartner("임준형").getName(), is("유현서"));
+        assertThat(students.getCurrentPartner("유현서").getName(), is("임준형"));
+        assertThat(students.getCurrentPartner("장진원").getName(), is("이기택"));
+        assertThat(students.getCurrentPartner("이기택").getName(), is("장진원"));
 
-        round = selector.getRound();
         selector.run(students, SexOption.DIFFERENT);
-        assertThat(students[0].getPartnerId(round), is(3));
-        assertThat(students[1].getPartnerId(round), is(2));
-        assertThat(students[2].getPartnerId(round), is(1));
-        assertThat(students[3].getPartnerId(round), is(0));
+        assertThat(students.getCurrentPartner("임준형").getName(), is("이기택"));
+        assertThat(students.getCurrentPartner("유현서").getName(), is("장진원"));
+        assertThat(students.getCurrentPartner("장진원").getName(), is("유현서"));
+        assertThat(students.getCurrentPartner("이기택").getName(), is("임준형"));
     }
 
     @Test
     public void 어쩔수_없이_동성_짝이_되어야_하는_경우() {
-        int round;
-        boolean result;
         Selector selector = new Selector();
-        Student[] students = new Student[4];
+        Students students = new Students();
 
-        students[0] = new Student(0, true, "개똥이");
-        students[1] = new Student(1, true, "소똥이");
-        students[2] = new Student(2, false, "말똥이");
-        students[3] = new Student(3, true, "듣보잡");
-
-        // TODO (5) assertThat(students.getCurrentPartner("개똥이").getName(), is("소똥이"));
+        students.add(new Student(0, false, "여A"));
+        students.add(new Student(1, false, "여B"));
+        students.add(new Student(2, false, "여C"));
+        students.add(new Student(3, false, "여D"));
+        students.add(new Student(4, false, "여E"));
+        students.add(new Student(5, true, "남A"));
+        students.add(new Student(6, false, "여F"));
+        students.add(new Student(7, true, "남B"));
+        students.add(new Student(8, false, "여G"));
+        students.add(new Student(9, true, "남C"));
 
         {   //  1라운드
-            round = selector.getRound();
             selector.run(students, SexOption.DIFFERENT);
-            assertThat(students[0].getPartnerId(round), is(2)); //  개똥이(남/1)-말똥이(여/1)
-            assertThat(students[1].getPartnerId(round), is(3)); //  소똥이(남/0)-듣보잡(남/0)
-            assertThat(students[2].getPartnerId(round), is(0)); //  말똥이(여/1)-개똥이(남/1)
-            assertThat(students[3].getPartnerId(round), is(1)); //  듣보잡(남/0)-소똥이(남/0)
+            students.print();
 
-            assertThat(students[0].getScore(), is(1));
-            assertThat(students[1].getScore(), is(0));
-            assertThat(students[2].getScore(), is(1));
-            assertThat(students[3].getScore(), is(0));
+            assertThat(students.getCurrentPartner("여A").getName(), is("남A"));
+            assertThat(students.getCurrentPartner("여B").getName(), is("남B"));
+            assertThat(students.getCurrentPartner("여C").getName(), is("남C"));
+            assertThat(students.getCurrentPartner("여D").getName(), is("여E"));
+            assertThat(students.getCurrentPartner("여E").getName(), is("여D"));
+            assertThat(students.getCurrentPartner("남A").getName(), is("여A"));
+            assertThat(students.getCurrentPartner("여F").getName(), is("여G"));
+            assertThat(students.getCurrentPartner("남B").getName(), is("여B"));
+            assertThat(students.getCurrentPartner("여G").getName(), is("여F"));
+            assertThat(students.getCurrentPartner("남C").getName(), is("여C"));
+
+            assertThat(students.getStudent("여A").getScore(), is(1));
+            assertThat(students.getStudent("여B").getScore(), is(1));
+            assertThat(students.getStudent("여C").getScore(), is(1));
+            assertThat(students.getStudent("여D").getScore(), is(0));
+            assertThat(students.getStudent("여E").getScore(), is(0));
+            assertThat(students.getStudent("남A").getScore(), is(1));
+            assertThat(students.getStudent("여F").getScore(), is(0));
+            assertThat(students.getStudent("남B").getScore(), is(1));
+            assertThat(students.getStudent("여G").getScore(), is(0));
+            assertThat(students.getStudent("남C").getScore(), is(1));
         }
 
 
         {   //  2라운드
-            round = selector.getRound();
-            result = selector.run(students, SexOption.DIFFERENT);
-            assertThat(result, is(false));
-
-            selector.sort(students);
-            assertThat(students[0].getName(), is("소똥이"));   //  소똥이(1/남/0)
-            assertThat(students[1].getName(), is("듣보잡"));   //  듣보잡(3/남/0)
-            assertThat(students[2].getName(), is("말똥이"));   //  말똥이(2/여/1)
-            assertThat(students[3].getName(), is("개똥이"));   //  개똥이(0/남/1)
-
+            students.sort();
+            students.print();
             selector.run(students, SexOption.DIFFERENT);
-            assertThat(students[0].getPartnerId(round), is(2));
-            assertThat(students[1].getPartnerId(round), is(0));
-            assertThat(students[2].getPartnerId(round), is(1));
-            assertThat(students[3].getPartnerId(round), is(3));
-        }
-    }
+            students.print();
 
-    @Test
-    public void 정렬_검증() {
-        Selector selector = new Selector();
-        Student[] students = new Student[4];
+            assertThat(students.getCurrentPartner("여D").getName(), is("남A"));
+            assertThat(students.getCurrentPartner("여E").getName(), is("남B"));
+            assertThat(students.getCurrentPartner("여F").getName(), is("남C"));
+            assertThat(students.getCurrentPartner("여G").getName(), is("여B"));
+            assertThat(students.getCurrentPartner("여B").getName(), is("여G"));
+            assertThat(students.getCurrentPartner("남A").getName(), is("여D"));
+            assertThat(students.getCurrentPartner("여C").getName(), is("여A"));
+            assertThat(students.getCurrentPartner("남B").getName(), is("여E"));
+            assertThat(students.getCurrentPartner("여A").getName(), is("여C"));
+            assertThat(students.getCurrentPartner("남C").getName(), is("여F"));
 
-        students[0] = new Student(0, true);
-        students[1] = new Student(1, true);
-        students[2] = new Student(2, false);
-        students[3] = new Student(3, true);
-
-        students[0].setScore(3);
-        students[1].setScore(3);
-        students[2].setScore(4);
-        students[3].setScore(1);
-
-        selector.sort(students);
-        assertThat(students[0].getScore(), is(1));
-        assertThat(students[1].getScore(), is(3));
-        assertThat(students[2].getScore(), is(3));
-        assertThat(students[3].getScore(), is(4));
-    }
-
-    @Test
-    public void Ver2_우선되는_성별을_우선으로_찾기() {
-        final int same = 0;
-        final int different = 1;
-        final int HAVE_NOTHING_TO_DO_WITH = 2;
-
-        Selector selector = new Selector();
-        Student[] students = new Student[10];
-
-        for(int i = 0; i < students.length; i++) {
-            students[i] = new Student();
+            assertThat(students.getStudent("여A").getScore(), is(1));
+            assertThat(students.getStudent("여B").getScore(), is(1));
+            assertThat(students.getStudent("여C").getScore(), is(1));
+            assertThat(students.getStudent("여D").getScore(), is(1));
+            assertThat(students.getStudent("여E").getScore(), is(1));
+            assertThat(students.getStudent("남A").getScore(), is(2));
+            assertThat(students.getStudent("여F").getScore(), is(1));
+            assertThat(students.getStudent("남B").getScore(), is(2));
+            assertThat(students.getStudent("여G").getScore(), is(0));
+            assertThat(students.getStudent("남C").getScore(), is(2));
         }
 
-        students[0].setId(0);
-        students[1].setId(1);
-        students[2].setId(2);
-        students[3].setId(3);
-        students[4].setId(4);
-        students[5].setId(5);
-        students[6].setId(6);
-        students[7].setId(7);
-        students[8].setId(8);
-        students[9].setId(9);
+        *//*
+        "여G" 0
+        "여E" 1
+        "여F" 1
+        "여D" 1
+        "여B" 1
+        "여C" 1
+        "여A" 1
+        "남B" 2
+        "남A" 2
+        "남C" 2
+        *//*
 
-        students[0].setMale(false);
-        students[1].setMale(false);
-        students[2].setMale(false);
-        students[3].setMale(false);
-        students[4].setMale(false);
-        students[5].setMale(true);
-        students[6].setMale(false);
-        students[7].setMale(true);
-        students[8].setMale(false);
-        students[9].setMale(true);
+        {   //  3라운드
+            students.sort();
+            students.print();
+            selector.run(students, SexOption.DIFFERENT);
+            students.print();
 
-        selector.run(students, SexOption.OFF);
-        assertThat(students[0].getPartnerId(selector.getRound() - 1), is(1));
-        assertThat(students[1].getPartnerId(selector.getRound() - 1), is(0));
-        assertThat(students[2].getPartnerId(selector.getRound() - 1), is(3));
-        assertThat(students[3].getPartnerId(selector.getRound() - 1), is(2));
-        assertThat(students[4].getPartnerId(selector.getRound() - 1), is(5));
-        assertThat(students[5].getPartnerId(selector.getRound() - 1), is(4));
-        assertThat(students[6].getPartnerId(selector.getRound() - 1), is(7));
-        assertThat(students[7].getPartnerId(selector.getRound() - 1), is(6));
-        assertThat(students[8].getPartnerId(selector.getRound() - 1), is(9));
-        assertThat(students[9].getPartnerId(selector.getRound() - 1), is(8));
+            assertThat(students.getCurrentPartner("여G").getName(), is("남B"));
+            assertThat(students.getCurrentPartner("여E").getName(), is("남A"));
+            assertThat(students.getCurrentPartner("여F").getName(), is("X"));
+            assertThat(students.getCurrentPartner("여D").getName(), is("여A"));
+            assertThat(students.getCurrentPartner("여B").getName(), is("여C"));
+            assertThat(students.getCurrentPartner("여C").getName(), is("여B"));
+            assertThat(students.getCurrentPartner("여A").getName(), is("여D"));
+            assertThat(students.getCurrentPartner("남B").getName(), is("여G"));
+            assertThat(students.getCurrentPartner("남A").getName(), is("여E"));
+            assertThat(students.getCurrentPartner("남C").getName(), is("X"));
 
-        selector.sort(students);
-
-        /*selector.run(students, SexOption.OFF);
-        assertThat(students[0].getPartnerId(selector.getRound() - 1), is(2));
-        assertThat(students[1].getPartnerId(selector.getRound() - 1), is(3));
-        assertThat(students[2].getPartnerId(selector.getRound() - 1), is(0));
-        assertThat(students[3].getPartnerId(selector.getRound() - 1), is(1));
-        assertThat(students[4].getPartnerId(selector.getRound() - 1), is(6));
-        assertThat(students[5].getPartnerId(selector.getRound() - 1), is(7));
-        assertThat(students[6].getPartnerId(selector.getRound() - 1), is(4));
-        assertThat(students[7].getPartnerId(selector.getRound() - 1), is(5));
-        assertThat(students[8].getPartnerId(selector.getRound() - 1), is(-1));
-        assertThat(students[9].getPartnerId(selector.getRound() - 1), is(-1));*/
-
-        /*while (true) {
-            if(!Main.run(++round, students, HAVE_NOTHING_TO_DO_WITH)) Main.shuffle(students);
-            else break;
+            assertThat(students.getStudent("여A").getScore(), is(1));
+            assertThat(students.getStudent("여B").getScore(), is(1));
+            assertThat(students.getStudent("여C").getScore(), is(1));
+            assertThat(students.getStudent("여D").getScore(), is(1));
+            assertThat(students.getStudent("여E").getScore(), is(1));
+            assertThat(students.getStudent("남A").getScore(), is(2));
+            assertThat(students.getStudent("여F").getScore(), is(1));
+            assertThat(students.getStudent("남B").getScore(), is(2));
+            assertThat(students.getStudent("여G").getScore(), is(0));
+            assertThat(students.getStudent("남C").getScore(), is(2));
         }
-        //Main.print(round, students);
-
-        while (true) {
-            if(!Main.run(++round, students, HAVE_NOTHING_TO_DO_WITH)) Main.shuffle(students);
-            else break;
-        }
-        //Main.print(round, students);*/
     }
 
     @Ignore
     @Test
     public void 짝이_없는_경우_혼자_앉게_되는것_검증() {
         Selector selector = new Selector();
-        Student[] students = new Student[3];
+        Students students = new Students();
 
-        for(int i = 0; i < students.length; i++) {
-            students[i] = new Student();
-        }
-
-        students[0].setId(0);
-        students[1].setId(1);
-        students[2].setId(2);
-
-        students[0].setMale(false);
-        students[1].setMale(true);
-        students[2].setMale(false);
+        students.add(new Student(0, false, "임준형"));
+        students.add(new Student(1, true, "유현서"));
+        students.add(new Student(2, false, "장진원"));
 
         selector.run(students, SexOption.DIFFERENT);
-        assertThat(students[0].getPartnerId(selector.getRound() - 1), is(1));
-        assertThat(students[1].getPartnerId(selector.getRound() - 1), is(0));
-        assertThat(students[2].getPartnerId(selector.getRound() - 1), is(-1));
+        assertThat(students.getCurrentPartner("임준형").getName(), is("유현서"));
+        assertThat(students.getCurrentPartner("유현서").getName(), is("임준형"));
+        assertThat(students.getCurrentPartner("장진원"), is(nullValue()));
 
         selector.run(students, SexOption.DIFFERENT);
-        assertThat(students[0].getPartnerId(selector.getRound() - 1), is(-1));
-        assertThat(students[1].getPartnerId(selector.getRound() - 1), is(2));
-        assertThat(students[2].getPartnerId(selector.getRound() - 1), is(1));
+        assertThat(students.getCurrentPartner("임준형"), is(nullValue()));
+        assertThat(students.getCurrentPartner("유현서").getName(), is("장진원"));
+        assertThat(students.getCurrentPartner("장진원").getName(), is("유현서"));
     }
 
-    @Ignore
     @Test
-    public void 나중에_지우자() {
-        Selector selector = new Selector();
-        Student[] students = new Student[10];
+    public void 정렬_검증() {
+        Students students = new Students();
 
-        for(int i = 0; i < students.length; i++) {
-            students[i] = new Student();
-        }
+        students.add(new Student(0, true));
+        students.add(new Student(1, true));
+        students.add(new Student(2, false));
+        students.add(new Student(3, true));
 
-        students[0].setId(0);
-        students[1].setId(1);
-        students[2].setId(2);
-        students[3].setId(3);
-        students[4].setId(4);
-        students[5].setId(5);
-        students[6].setId(6);
-        students[7].setId(7);
-        students[8].setId(8);
-        students[9].setId(9);
+        students.getStudent(0).setScore(3);
+        students.getStudent(1).setScore(3);
+        students.getStudent(2).setScore(4);
+        students.getStudent(3).setScore(1);
 
-        students[0].setMale(false); // 5, 7, 9, 4, 1
-        students[1].setMale(false); // 7, 5, 6, 9, 0
-        students[2].setMale(false); // 9, 8, 5, 7, 4
-        students[3].setMale(false); // 4, 9, 7, 5, 5
-        students[4].setMale(false); // 3, 6, 8, 0, 2
-        students[5].setMale(true);  // 0, 1, 2, 3, 3
-        students[6].setMale(false); // 8, 4, 1, ?, 9
-        students[7].setMale(true);  // 1, 0, 3, 2, 8
-        students[8].setMale(false); // 6, 2, 4, ?, 7
-        students[9].setMale(true);  // 2, 3, 0, 1, 6
-
-        selector.run(students, SexOption.DIFFERENT);
-        assertThat(students[0].getPartnerId(selector.getRound() - 1), is(5));
-        assertThat(students[1].getPartnerId(selector.getRound() - 1), is(7));
-        assertThat(students[2].getPartnerId(selector.getRound() - 1), is(9));
-        assertThat(students[3].getPartnerId(selector.getRound() - 1), is(4));
-        assertThat(students[4].getPartnerId(selector.getRound() - 1), is(3));
-        assertThat(students[5].getPartnerId(selector.getRound() - 1), is(0));
-        assertThat(students[6].getPartnerId(selector.getRound() - 1), is(8));
-        assertThat(students[7].getPartnerId(selector.getRound() - 1), is(1));
-        assertThat(students[8].getPartnerId(selector.getRound() - 1), is(6));
-        assertThat(students[9].getPartnerId(selector.getRound() - 1), is(2));
-
-        selector.run(students, SexOption.DIFFERENT);
-        assertThat(students[0].getPartnerId(selector.getRound() - 1), is(7));
-        assertThat(students[1].getPartnerId(selector.getRound() - 1), is(5));
-        assertThat(students[2].getPartnerId(selector.getRound() - 1), is(8));
-        assertThat(students[3].getPartnerId(selector.getRound() - 1), is(9));
-        assertThat(students[4].getPartnerId(selector.getRound() - 1), is(6));
-        assertThat(students[5].getPartnerId(selector.getRound() - 1), is(1));
-        assertThat(students[6].getPartnerId(selector.getRound() - 1), is(4));
-        assertThat(students[7].getPartnerId(selector.getRound() - 1), is(0));
-        assertThat(students[8].getPartnerId(selector.getRound() - 1), is(2));
-        assertThat(students[9].getPartnerId(selector.getRound() - 1), is(3));
-
-        selector.run(students, SexOption.DIFFERENT);
-        assertThat(students[0].getPartnerId(selector.getRound() - 1), is(9));
-        assertThat(students[1].getPartnerId(selector.getRound() - 1), is(6));
-        assertThat(students[2].getPartnerId(selector.getRound() - 1), is(5));
-        assertThat(students[3].getPartnerId(selector.getRound() - 1), is(7));
-        assertThat(students[4].getPartnerId(selector.getRound() - 1), is(8));
-        assertThat(students[5].getPartnerId(selector.getRound() - 1), is(2));
-        assertThat(students[6].getPartnerId(selector.getRound() - 1), is(1));
-        assertThat(students[7].getPartnerId(selector.getRound() - 1), is(3));
-        assertThat(students[8].getPartnerId(selector.getRound() - 1), is(4));
-        assertThat(students[9].getPartnerId(selector.getRound() - 1), is(0));
-
-        selector.run(students, SexOption.DIFFERENT);
-        assertThat(students[0].getPartnerId(selector.getRound() - 1), is(4));
-        assertThat(students[1].getPartnerId(selector.getRound() - 1), is(9));
-        assertThat(students[2].getPartnerId(selector.getRound() - 1), is(7));
-        assertThat(students[3].getPartnerId(selector.getRound() - 1), is(5));
-        assertThat(students[4].getPartnerId(selector.getRound() - 1), is(0));
-        assertThat(students[5].getPartnerId(selector.getRound() - 1), is(3));
-        assertThat(students[6].getPartnerId(selector.getRound() - 1), is(-1));
-        assertThat(students[7].getPartnerId(selector.getRound() - 1), is(2));
-        assertThat(students[8].getPartnerId(selector.getRound() - 1), is(-1));
-        assertThat(students[9].getPartnerId(selector.getRound() - 1), is(1));
-    }
+        students.sort();
+        assertThat(students.get(0).getScore(), is(1));
+        assertThat(students.get(1).getScore(), is(3));
+        assertThat(students.get(2).getScore(), is(3));
+        assertThat(students.get(3).getScore(), is(4));
+    }*/
 }
